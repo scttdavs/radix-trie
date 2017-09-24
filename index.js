@@ -12,57 +12,71 @@ const customReduce = (array, callback, result) => {
 };
 
 class Trie {
-  constructor() {
+  constructor(value = null) {
+    this.value = value;
     this.store = {};
   }
 
-  add(key, value) {
+  add(key, value, root = this) {
+    let keyArray;
+    let keyString;
+    if (Array.isArray(key)) {
+      keyArray = key;
+      keyString = key.join("");
+    } else {
+      keyArray = key.split("");
+      keyString = key;
+    }
     // if the key exists already, overwrite it
-    if (this.store[key]) {
-      this.store[key] = value;
-      return this;
+    if (this.store[keyString]) {
+      this.store[keyString] = new Trie(value);
+      return root;
     }
 
-    customReduce(key.split(""), (newKey, letter, currentIndex, array) => {
-      const ret = newKey + letter;
+    console.log("KEY", key, value)
+    let newKeyIndex;
+    const addKey = customReduce(keyArray, (newKey, letter, currentIndex, array) => {
       // if this iteration of the key exists, add the value to that
       // node with the remaining key value
-      if (this.store[ret]) {
-        this.store[ret].add(array.slice(currentIndex + 1), value);
+      if (this.store[newKey]) {
+        newKeyIndex = currentIndex;
         return EXIT_REDUCE;
       }
 
-      return ret;
+      return newKey + letter;
     }, "");
 
-    // no other leafs matched or partially matched, so save it here
-    this.store[key] = value;
+    if (addKey === keyString) {
+      // no other leafs matched or partially matched, so save it here
+      this.store[keyString] = new Trie(value);
+    } else {
+      // partial hit, add to that node
+      this.store[addKey].add(keyArray.slice(newKeyIndex), value, root);
+    }
 
-    return this;
+    return root;
   }
 
   get(key) {
     // if the key exists already, return it
     if (this.store[key]) {
-      return this.store[key];
+      return this.store[key].value;
     }
 
     let getKey;
     let getIndex;
-    customReduce(key.split(""), (newKey, letter, currentIndex, array) => {
-      const ret = newKey + letter;
+    getKey = customReduce(key.split(""), (newKey, letter, currentIndex, array) => {
       // if this iteration of the key exists, add the value to that
       // node with the remaining key value
-      if (this.store[ret]) {
+      if (this.store[newKey]) {
         getIndex = currentIndex;
-        getKey = ret
         return EXIT_REDUCE;
       }
 
-      return ret;
+      return newKey + letter;
     }, "");
 
-    return this.store[getKey].get(array.slice(getIndex + 1));
+    return this.store[getKey].get(key.slice(getIndex));
   }
 };
 
