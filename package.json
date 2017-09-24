@@ -1,0 +1,33 @@
+{
+  "name": "radix-trie-js",
+  "version": "1.0.5",
+  "description": "Radix Trie in Javascript",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha",
+    "report": "node ./node_modules/nyc/bin/nyc.js mocha && node ./node_modules/nyc/bin/nyc.js report"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/scttdavs/bst.git"
+  },
+  "keywords": [
+    "radix trie",
+    "trie",
+    "radix",
+    "tree",
+    "javascript"
+  ],
+  "author": "Scott Davis",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/scttdavs/bst/issues"
+  },
+  "homepage": "https://github.com/scttdavs/bst#readme",
+  "devDependencies": {
+    "coveralls": "^2.13.1",
+    "mocha": "^3.5.3",
+    "mocha-lcov-reporter": "^1.3.0",
+    "nyc": "^11.2.1"
+  }
+}
