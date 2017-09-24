@@ -1,11 +1,12 @@
 "use strict";
 
-const EXIT_REDUCE = "EXIT_REDUCE";
+const BREAK = "TRIE_BREAK_REDUCE";
+const EMPTY_STRING = "";
 
 const customReduce = (array, callback, result) => {
   for (let i = 0; i < array.length; i++) {
     let val = callback(result, array[i], i, array);
-    if (val === EXIT_REDUCE) break;
+    if (val === BREAK) break;
     result = val;
   }
   return result;
@@ -17,7 +18,7 @@ class Trie {
     this.store = {};
   }
 
-  add(key, value, root = this) {
+  add(key, value = true, root = this) {
     let keyArray;
     let keyString;
     if (Array.isArray(key)) {
@@ -33,24 +34,23 @@ class Trie {
       return root;
     }
 
-    console.log("KEY", key, value)
     let newKeyIndex;
     const addKey = customReduce(keyArray, (newKey, letter, currentIndex, array) => {
       // if this iteration of the key exists, add the value to that
-      // node with the remaining key value
+      // node passing the remaining key's letters
       if (this.store[newKey]) {
-        newKeyIndex = currentIndex;
-        return EXIT_REDUCE;
+        newKeyIndex = currentIndex; // save the current index so we know where to split the key
+        return BREAK;
       }
 
-      return newKey + letter;
-    }, "");
+      return newKey + letter; // accumulates the key letter by letter
+    }, EMPTY_STRING);
 
     if (addKey === keyString) {
       // no other leafs matched or partially matched, so save it here
       this.store[keyString] = new Trie(value);
     } else {
-      // partial hit, add to that node
+      // partial hit, add to the already existing node
       this.store[addKey].add(keyArray.slice(newKeyIndex), value, root);
     }
 
@@ -63,20 +63,24 @@ class Trie {
       return this.store[key].value;
     }
 
-    let getKey;
     let getIndex;
-    getKey = customReduce(key.split(""), (newKey, letter, currentIndex, array) => {
-      // if this iteration of the key exists, add the value to that
-      // node with the remaining key value
+    const getKey = customReduce(key.split(""), (newKey, letter, currentIndex, array) => {
+      // if this iteration of the key exists, get the value from that
+      // node with the remaining key's letters
       if (this.store[newKey]) {
-        getIndex = currentIndex;
-        return EXIT_REDUCE;
+        getIndex = currentIndex; // save the current index so we know where to split the key
+        return BREAK;
       }
 
       return newKey + letter;
-    }, "");
+    }, EMPTY_STRING);
 
-    return this.store[getKey].get(key.slice(getIndex));
+    if (this.store[getKey]) {
+      return this.store[getKey].get(key.slice(getIndex));
+    } else {
+      // no matches
+      return null;
+    }
   }
 };
 
