@@ -41,7 +41,7 @@ class Trie {
   add(key, value = true, root = this) {
     // if the key exists already, overwrite it
     if (this.store.has(key)) {
-      this.store.set(key, new Trie(value));
+      this.store.get(key).value = value; // only overwrite value
       return root;
     }
 

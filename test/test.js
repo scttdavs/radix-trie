@@ -13,6 +13,15 @@ describe("Radix Trie", () => {
       assert.equal(trie.get("foo"), 5);
     });
 
+    it("should only overwrite value.", () => {
+      const trie = new Trie().add("foo", 5).add("foos", 4);
+      assert.equal(trie.get("foo"), 5);
+
+      trie.add("foo", 6);
+      assert.equal(trie.get("foo"), 6);
+      assert.equal(trie.get("foos"), 4);
+    });
+
     it("add two values to the tree, compressed.", () => {
       const trie = new Trie().add("foo", 5).add("foos", 9);
 
