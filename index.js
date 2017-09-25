@@ -46,12 +46,12 @@ class Trie {
     }
 
     let newKeyIndex;
-    let looped = false;
+    let didNotloop = true;
     const addKey = reduceReverse(key, (reducedKey, originalKey, currentIndex) => {
       // check for partial collisions
       for (let [originalKey, trie] of this.store) {
         if (originalKey.indexOf(reducedKey) === 0) {
-          looped = true;
+          didNotloop = false;
 
           // partial match of an existing prefix
           newKeyIndex = currentIndex; // save the current index so we know where to split the key
@@ -75,7 +75,7 @@ class Trie {
       }
     });
 
-    if (addKey === key && !looped) {
+    if (addKey === key && didNotloop) {
       // no other leafs matched or partially matched, so save it here
       this.store.set(key, new Trie(value));
     }
