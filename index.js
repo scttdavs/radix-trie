@@ -39,52 +39,45 @@ class Trie {
   }
 
   add(key, value = true, root = this) {
-    let keyString;
-
-    if (Array.isArray(key)) {
-      keyString = key.join("");
-    } else {
-      keyString = key;
-    }
     // if the key exists already, overwrite it
-    if (this.store.has(keyString)) {
-      this.store.set(keyString, new Trie(value));
+    if (this.store.has(key)) {
+      this.store.set(key, new Trie(value));
       return root;
     }
 
     let newKeyIndex;
     let looped = false;
-    const addKey = reduceReverse(keyString, (reducedKey, originalKey, currentIndex) => {
+    const addKey = reduceReverse(key, (reducedKey, originalKey, currentIndex) => {
       // check for partial collisions
-      for (let [key, trie] of this.store) {
-        if (key.indexOf(reducedKey) === 0) {
+      for (let [originalKey, trie] of this.store) {
+        if (originalKey.indexOf(reducedKey) === 0) {
           looped = true;
 
           // partial match of an existing prefix
           newKeyIndex = currentIndex; // save the current index so we know where to split the key
-          if (key === reducedKey) {
-            this.store.get(key).add(keyString.slice(currentIndex), value);
+          if (originalKey === reducedKey) {
+            this.store.get(originalKey).add(key.slice(currentIndex), value);
             return BREAK;
           } else {
             // collision found, resave it
-            if (reducedKey == keyString) {
+            if (reducedKey == key) {
               this.store.set(reducedKey, new Trie(value));
             } else {
               this.store.set(reducedKey, new Trie());
             }
-            this.store.get(reducedKey).store.set(key.slice(reducedKey.length), trie)
-            this.store.delete(key);
+            this.store.get(reducedKey).store.set(originalKey.slice(reducedKey.length), trie)
+            this.store.delete(originalKey);
 
             // save current one too
-            if (reducedKey !== keyString) this.store.get(reducedKey).add(keyString.slice(currentIndex), value);
+            if (reducedKey !== key) this.store.get(reducedKey).add(key.slice(currentIndex), value);
           }
         }
       }
     });
 
-    if (addKey === keyString && !looped) {
+    if (addKey === key && !looped) {
       // no other leafs matched or partially matched, so save it here
-      this.store.set(keyString, new Trie(value));
+      this.store.set(key, new Trie(value));
     }
 
     return root;
