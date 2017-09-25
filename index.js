@@ -39,13 +39,11 @@ class Trie {
   }
 
   add(key, value = true, root = this) {
-    let keyArray, keyString;
+    let keyString;
 
     if (Array.isArray(key)) {
-      keyArray = key;
       keyString = key.join("");
     } else {
-      keyArray = key.split("");
       keyString = key;
     }
     // if the key exists already, overwrite it
@@ -65,7 +63,7 @@ class Trie {
           // partial match of an existing prefix
           newKeyIndex = currentIndex; // save the current index so we know where to split the key
           if (key === reducedKey) {
-            this.store.get(key).add(keyArray.slice(currentIndex), value);
+            this.store.get(key).add(keyString.slice(currentIndex), value);
             return BREAK;
           } else {
             // collision found, resave it
