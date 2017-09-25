@@ -19,6 +19,19 @@ describe("Radix Trie", () => {
       assert.equal(trie.get("foo"), 5);
       assert.equal(trie.get("foos"), 9);
     });
+
+    it("consolidates prefixes with new entries", () => {
+      const trie = new Trie().add("foo", 5);
+
+      assert.equal(trie.store.has("foo"), true);
+
+      trie.add("faa", 3);
+
+      assert.equal(trie.store.has("foo"), false);
+      assert.equal(trie.store.has("f"), true);
+      assert.equal(trie.get("foo"), 5);
+      assert.equal(trie.get("faa"), 3);
+    });
   });
 
   describe("Get", () => {
@@ -47,7 +60,7 @@ describe("Radix Trie", () => {
     it("gets a list of all key/value pairs that at least partially match a key #2", () => {
       const trie = new Trie().add("bar", 15).add("barstool", false).add("b", "b");
 
-      assert.deepEqual(trie.fuzzyGet("b"), [["bar", 15], ["barstool", false], ["b", "b"]]);
+      assert.deepEqual(trie.fuzzyGet("b"), [["b", "b"], ["bar", 15], ["barstool", false]]);
     });
   });
 });

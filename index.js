@@ -2,14 +2,34 @@
 
 const BREAK = "TRIE_BREAK_REDUCE";
 const EMPTY_STRING = "";
+const util = require("util");
+// ex. console.log(util.inspect(trie, false, null));
 
-const customReduce = (array, callback, result) => {
-  for (let i = 0; i < array.length; i++) {
-    let val = callback(result, array[i], i, array);
+// a reduce implementation you can "break" out of
+const reduce = (accumulator, callback, result) => {
+  for (let i = 0; i < accumulator.length; i++) {
+    let val = callback(result, accumulator[i], i, accumulator);
     if (val === BREAK) break;
     result = val;
   }
   return result;
+};
+
+// funky function to loop backwards over a key, so
+// foo, then fo, then f
+const reduceReverse = (result, callback) => {
+  const end = result;
+  let current;
+  for (let i = end.length; i > 0; i--) {
+    current = end.slice(0, i);
+    let val = callback(current, result, i);
+    if (val === BREAK) break;
+    // if this is reached, it didn't break so return the original
+    // if the loop ends here since no match was found
+    current = result;
+
+  }
+  return current;
 };
 
 class Trie {
@@ -35,23 +55,38 @@ class Trie {
     }
 
     let newKeyIndex;
-    const addKey = customReduce(keyArray, (newKey, letter, currentIndex, array) => {
-      // if this iteration of the key exists, add the value to that
-      // node passing the remaining key's letters
-      if (this.store.has(newKey)) {
-        newKeyIndex = currentIndex; // save the current index so we know where to split the key
-        return BREAK;
+    let looped = false;
+    const addKey = reduceReverse(keyString, (reducedKey, originalKey, currentIndex) => {
+      // check for partial collisions
+      for (let [key, trie] of this.store) {
+        if (key.indexOf(reducedKey) === 0) {
+          looped = true;
+
+          // partial match of an existing prefix
+          newKeyIndex = currentIndex; // save the current index so we know where to split the key
+          if (key === reducedKey) {
+            this.store.get(key).add(keyArray.slice(currentIndex), value);
+            return BREAK;
+          } else {
+            // collision found, resave it
+            if (reducedKey == keyString) {
+              this.store.set(reducedKey, new Trie(value));
+            } else {
+              this.store.set(reducedKey, new Trie());
+            }
+            this.store.get(reducedKey).store.set(key.slice(reducedKey.length), trie)
+            this.store.delete(key);
+
+            // save current one too
+            if (reducedKey !== keyString) this.store.get(reducedKey).add(keyString.slice(currentIndex), value);
+          }
+        }
       }
+    });
 
-      return newKey + letter; // accumulates the key letter by letter
-    }, EMPTY_STRING);
-
-    if (addKey === keyString) {
+    if (addKey === keyString && !looped) {
       // no other leafs matched or partially matched, so save it here
       this.store.set(keyString, new Trie(value));
-    } else {
-      // partial hit, add to the already existing node
-      this.store.get(addKey).add(keyArray.slice(newKeyIndex), value, root);
     }
 
     return root;
@@ -64,7 +99,7 @@ class Trie {
     }
 
     let getIndex;
-    const getKey = customReduce(key.split(""), (newKey, letter, currentIndex, array) => {
+    const getKey = reduce(key.split(""), (newKey, letter, currentIndex, array) => {
       // if this iteration of the key exists, get the value from that
       // node with the remaining key's letters
       if (this.store.has(newKey)) {
@@ -95,7 +130,7 @@ class Trie {
           // already end of a word, so let's add it
           matches.push([prefix + key, trie.value]);
         }
-        trie.fuzzyGet(null, matches, key); // get all possible results of child nodes
+        trie.fuzzyGet(null, matches, prefix + key); // get all possible results of child nodes
       }
     }
     return matches;
