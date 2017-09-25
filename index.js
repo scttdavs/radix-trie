@@ -82,6 +82,24 @@ class Trie {
       return null;
     }
   }
+
+  fuzzyGet(getKey,
+           matches = [],
+           prefix = EMPTY_STRING) {
+    for (let [key, trie] of this.store) {
+      if (key.indexOf(getKey) === 0 || getKey === null) {
+        // when getKey is null, we want all the possible results
+
+        // partial or complete match of the prefix
+        if (trie.value !== null) {
+          // already end of a word, so let's add it
+          matches.push([prefix + key, trie.value]);
+        }
+        trie.fuzzyGet(null, matches, key); // get all possible results of child nodes
+      }
+    }
+    return matches;
+  }
 };
 
 module.exports = Trie;
