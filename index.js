@@ -45,32 +45,35 @@ class Trie {
       return root;
     }
 
-    let newKeyIndex;
     let didNotloop = true;
     const addKey = reduceReverse(key, (reducedKey, originalKey, currentIndex) => {
-      // check for partial collisions
+      // check for partial collisions over all existing keys
       for (let [originalKey, trie] of this.store) {
         if (originalKey.indexOf(reducedKey) === 0) {
-          didNotloop = false;
-
           // partial match of an existing prefix
-          newKeyIndex = currentIndex; // save the current index so we know where to split the key
+
+          didNotloop = false;
           if (originalKey === reducedKey) {
+            // exact match found
             this.store.get(originalKey).add(key.slice(currentIndex), value);
-            return BREAK;
           } else {
-            // collision found, resave it
+            // partial collision found
             if (reducedKey == key) {
+              // the reducedKey is the full key we are inserting, so add the value
               this.store.set(reducedKey, new Trie(value));
             } else {
               this.store.set(reducedKey, new Trie());
             }
+            // set the exiting collided-with key/value
             this.store.get(reducedKey).store.set(originalKey.slice(reducedKey.length), trie)
-            this.store.delete(originalKey);
+            this.store.delete(originalKey); // clean up and delete the old one
 
-            // save current one too
+            // save current one too if there are more letters in the key
+            // that still need to be added
             if (reducedKey !== key) this.store.get(reducedKey).add(key.slice(currentIndex), value);
           }
+          // no need to keep iterating, found the largest common prefix
+          return BREAK;
         }
       }
     });
