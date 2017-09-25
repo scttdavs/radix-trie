@@ -15,12 +15,12 @@ const customReduce = (array, callback, result) => {
 class Trie {
   constructor(value = null) {
     this.value = value;
-    this.store = {};
+    this.store = new Map();
   }
 
   add(key, value = true, root = this) {
-    let keyArray;
-    let keyString;
+    let keyArray, keyString;
+
     if (Array.isArray(key)) {
       keyArray = key;
       keyString = key.join("");
@@ -29,8 +29,8 @@ class Trie {
       keyString = key;
     }
     // if the key exists already, overwrite it
-    if (this.store[keyString]) {
-      this.store[keyString] = new Trie(value);
+    if (this.store.has(keyString)) {
+      this.store.set(keyString, new Trie(value));
       return root;
     }
 
@@ -38,7 +38,7 @@ class Trie {
     const addKey = customReduce(keyArray, (newKey, letter, currentIndex, array) => {
       // if this iteration of the key exists, add the value to that
       // node passing the remaining key's letters
-      if (this.store[newKey]) {
+      if (this.store.has(newKey)) {
         newKeyIndex = currentIndex; // save the current index so we know where to split the key
         return BREAK;
       }
@@ -48,10 +48,10 @@ class Trie {
 
     if (addKey === keyString) {
       // no other leafs matched or partially matched, so save it here
-      this.store[keyString] = new Trie(value);
+      this.store.set(keyString, new Trie(value));
     } else {
       // partial hit, add to the already existing node
-      this.store[addKey].add(keyArray.slice(newKeyIndex), value, root);
+      this.store.get(addKey).add(keyArray.slice(newKeyIndex), value, root);
     }
 
     return root;
@@ -59,15 +59,15 @@ class Trie {
 
   get(key) {
     // if the key exists already, return it
-    if (this.store[key]) {
-      return this.store[key].value;
+    if (this.store.has(key)) {
+      return this.store.get(key).value;
     }
 
     let getIndex;
     const getKey = customReduce(key.split(""), (newKey, letter, currentIndex, array) => {
       // if this iteration of the key exists, get the value from that
       // node with the remaining key's letters
-      if (this.store[newKey]) {
+      if (this.store.has(newKey)) {
         getIndex = currentIndex; // save the current index so we know where to split the key
         return BREAK;
       }
@@ -75,8 +75,8 @@ class Trie {
       return newKey + letter;
     }, EMPTY_STRING);
 
-    if (this.store[getKey]) {
-      return this.store[getKey].get(key.slice(getIndex));
+    if (this.store.has(getKey)) {
+      return this.store.get(getKey).get(key.slice(getIndex));
     } else {
       // no matches
       return null;

@@ -33,5 +33,13 @@ describe("Radix Trie", () => {
       assert.equal(trie.get("barkeep"), null);
       assert.equal(trie.get("barstool"), false);
     });
-  })
+  });
+
+  describe("FuzzyGet", () => {
+    it("gets a list of all key/value pairs that at least partially match a key", () => {
+      const trie = new Trie().add("bar", 15).add("barstool", false);
+
+      assert.deepEqual(trie.fuzzyGet("bar"), [["bar", 15], ["barstool", false]]);
+    });
+  });
 });
