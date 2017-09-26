@@ -101,46 +101,52 @@ class Trie {
 
       if (trie.store.size) {
         // has other nodes branching off, so just remove value
+        console.log("HIT", key);
         trie.value = null;
+        return root === this ? root : this.store.size === 1; // if it equals 1, it is a redundant edge
 
-        if (trie.store.size === 1) {
-          // just one entry, so consolidate
-          const remainingEntry = trie.store.entries().next();
-          set.call(this, key + remainingEntry.value[0], remainingEntry.value[1]);
-          this.store.delete(key);
-        }
       } else {
+
+
         // no other nodes, remove the whole entry
         this.store.delete(key);
+        console.log("HIT2", key, this.store.size === 1 && this.value === null, root === this);
+        return root === this ? root : this.store.size === 1 && this.value === null; // if it equals 1, it is a redundant edge
       }
-      return root;
+    } else {
+      // check for partial hits
+      let result;
+      let delKey;
+      let rkey;
+      reduceReverse(key, (reducedKey, originalDeleteKey, currentIndex) => {
+        // check for partial collisions over all existing keys
+        for (let [originalKey, trie] of this.store) {
+          if (originalKey === reducedKey) {
+            const trie = this.store.get(originalKey);
+
+            delKey = originalKey;
+            rkey = originalDeleteKey.slice(reducedKey.length);
+            result = this.store.get(reducedKey).delete(originalDeleteKey.slice(reducedKey.length), root);
+
+            return BREAK;
+          }
+        }
+      });
+      if (result === true) {
+        // only one child node was left, consolidate it
+        console.log("CONS", delKey, rkey)
+        set.call(this, delKey + this.store.get(delKey).store.keys().next().value, this.store.get(delKey).store.values().next().value);
+        this.store.delete(delKey);
+      }
     }
 
-    // check for partial hits
-    let result;
-    reduceReverse(key, (reducedKey, originalDeleteKey, currentIndex) => {
-      // check for partial collisions over all existing keys
-      for (let [originalKey, trie] of this.store) {
-        if (originalKey === reducedKey) {
-          const trie = this.store.get(originalKey);
-          // partial match of an existing prefix
-          if (trie.store.size > 1) {
-            result = this.store.get(reducedKey).delete(originalDeleteKey.slice(reducedKey.length), root);
-          } else {
-            // only one node so consolidate
-
-          }
-          return BREAK;
-        }
-      }
-    });
-
-    return result;
+    return root;
   }
 
   get(key) {
     // if the key exists already, return it
     if (this.store.has(key)) {
+      console.log("HIIIT", this.store.get(key).value);
       return this.store.get(key).value;
     }
 
@@ -157,6 +163,7 @@ class Trie {
     }, EMPTY_STRING);
 
     if (this.store.has(getKey)) {
+      console.log("NEW", this.store.get(getKey).get(key.slice(getIndex)))
       return this.store.get(getKey).get(key.slice(getIndex));
     } else {
       // no matches

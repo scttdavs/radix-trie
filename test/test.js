@@ -113,6 +113,7 @@ describe("Radix Trie", () => {
       assert.equal(trie.get("doge"), null);
       assert.equal(trie.get("dogs"), true);
       assert.equal(trie.get("dog"), null);
+      assert.equal(trie.store.keys().next().value, "dogs");
     });
   });
 
