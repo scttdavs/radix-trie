@@ -67,6 +67,53 @@ describe("Radix Trie", () => {
 
       assert.equal(trie.get("foo"), null);
     });
+
+    it("deletes a value with nodes.", () => {
+      const trie = new Trie().add("foo", 5).add("foobar");
+
+      assert.equal(trie.get("foo"), 5);
+
+      trie.delete("foo");
+
+      assert.equal(trie.get("foo"), null);
+      assert.equal(trie.get("foobar"), true);
+    });
+
+    it("deletes a value split over more than one node", () => {
+      const trie = new Trie().add("dog").add("doge").add("dogs");
+
+      assert.equal(trie.get("doge"), true);
+      trie.delete("doge");
+
+      assert.equal(trie.get("doge"), null);
+      assert.equal(trie.get("dog"), true);
+      assert.equal(trie.get("dogs"), true);
+    });
+
+    it("deletes a value with more than one node", () => {
+      const trie = new Trie().add("dog").add("doge").add("dogs");
+
+      assert.equal(trie.get("doge"), true);
+      trie.delete("dog");
+
+      assert.equal(trie.get("doge"), true);
+      assert.equal(trie.get("dogs"), true);
+      assert.equal(trie.get("dog"), null);
+    });
+
+    it("chains deletes and additions together", () => {
+      const trie = new Trie().add("dog").add("doge").add("dogs");
+
+      console.log(util.inspect(trie, false, null));
+      assert.equal(trie.get("doge"), true);
+      assert.equal(trie.get("dog"), true);
+      trie.delete("dog").delete("doge");
+
+      console.log(util.inspect(trie, false, null));
+      assert.equal(trie.get("doge"), null);
+      assert.equal(trie.get("dogs"), true);
+      assert.equal(trie.get("dog"), null);
+    });
   });
 
   describe("Get", () => {

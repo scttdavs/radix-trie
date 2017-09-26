@@ -32,6 +32,14 @@ const reduceReverse = (result, callback) => {
   return current;
 };
 
+const set = function(key, value) {
+  if (value instanceof Trie) {
+    this.store.set(key, value);
+  } else {
+    this.store.set(key, new Trie(value));
+  }
+}
+
 class Trie {
   constructor(value = null) {
     this.value = value;
@@ -46,7 +54,7 @@ class Trie {
     }
 
     let didNotloop = true;
-    const addKey = reduceReverse(key, (reducedKey, originalKey, currentIndex) => {
+    const addKey = reduceReverse(key, (reducedKey, originalAddKey, currentIndex) => {
       // check for partial collisions over all existing keys
       for (let [originalKey, trie] of this.store) {
         if (originalKey.indexOf(reducedKey) === 0) {
@@ -60,12 +68,12 @@ class Trie {
             // partial collision found
             if (reducedKey == key) {
               // the reducedKey is the full key we are inserting, so add the value
-              this.store.set(reducedKey, new Trie(value));
+              set.call(this, reducedKey, value);
             } else {
-              this.store.set(reducedKey, new Trie());
+              set.call(this, reducedKey);
             }
             // set the exiting collided-with key/value
-            this.store.get(reducedKey).store.set(originalKey.slice(reducedKey.length), trie)
+            set.call(this.store.get(reducedKey), originalKey.slice(reducedKey.length), trie);
             this.store.delete(originalKey); // clean up and delete the old one
 
             // save current one too if there are more letters in the key
@@ -80,7 +88,7 @@ class Trie {
 
     if (addKey === key && didNotloop) {
       // no other leafs matched or partially matched, so save it here
-      this.store.set(key, new Trie(value));
+      set.call(this, key, value);
     }
 
     return root;
@@ -90,15 +98,44 @@ class Trie {
     // if the key exists already, delete it
     if (this.store.has(key)) {
       const trie = this.store.get(key);
-      if (trie.store.entries().length) {
+
+      if (trie.store.size) {
         // has other nodes branching off, so just remove value
         trie.value = null;
+
+        if (trie.store.size === 1) {
+          // just one entry, so consolidate
+          const remainingEntry = trie.store.entries().next();
+          set.call(this, key + remainingEntry.value[0], remainingEntry.value[1]);
+          this.store.delete(key);
+        }
       } else {
         // no other nodes, remove the whole entry
         this.store.delete(key);
       }
       return root;
     }
+
+    // check for partial hits
+    let result;
+    reduceReverse(key, (reducedKey, originalDeleteKey, currentIndex) => {
+      // check for partial collisions over all existing keys
+      for (let [originalKey, trie] of this.store) {
+        if (originalKey === reducedKey) {
+          const trie = this.store.get(originalKey);
+          // partial match of an existing prefix
+          if (trie.store.size > 1) {
+            result = this.store.get(reducedKey).delete(originalDeleteKey.slice(reducedKey.length), root);
+          } else {
+            // only one node so consolidate
+
+          }
+          return BREAK;
+        }
+      }
+    });
+
+    return result;
   }
 
   get(key) {
