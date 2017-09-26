@@ -86,6 +86,21 @@ class Trie {
     return root;
   }
 
+  delete(key, root = this) {
+    // if the key exists already, delete it
+    if (this.store.has(key)) {
+      const trie = this.store.get(key);
+      if (trie.store.entries().length) {
+        // has other nodes branching off, so just remove value
+        trie.value = null;
+      } else {
+        // no other nodes, remove the whole entry
+        this.store.delete(key);
+      }
+      return root;
+    }
+  }
+
   get(key) {
     // if the key exists already, return it
     if (this.store.has(key)) {

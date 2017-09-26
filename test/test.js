@@ -57,6 +57,18 @@ describe("Radix Trie", () => {
     });
   });
 
+  describe("Delete", () => {
+    it("deletes a value.", () => {
+      const trie = new Trie().add("foo", 5);
+
+      assert.equal(trie.get("foo"), 5);
+
+      trie.delete("foo");
+
+      assert.equal(trie.get("foo"), null);
+    });
+  });
+
   describe("Get", () => {
     it("gets a value when it exists", () => {
       const trie = new Trie().add("bar", 15).add("barstool", false);
