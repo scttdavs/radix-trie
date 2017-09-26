@@ -41,6 +41,20 @@ describe("Radix Trie", () => {
       assert.equal(trie.get("foo"), 5);
       assert.equal(trie.get("faa"), 3);
     });
+
+    it("consolidates prefixes with new entries #2", () => {
+      const trie = new Trie().add("foo", 5);
+
+      assert.equal(trie.store.has("foo"), true);
+
+      trie.add("foobar", 3).add("foobared");
+
+      assert.equal(trie.store.has("foo"), true);
+      assert.equal(trie.store.has("foobar"), false);
+      assert.equal(trie.get("foo"), 5);
+      assert.equal(trie.get("foobar"), 3);
+      assert.equal(trie.get("foobared"), true);
+    });
   });
 
   describe("Get", () => {
