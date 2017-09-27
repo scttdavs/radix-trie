@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/scttdavs/bst.git"
+    "url": "git+https://github.com/scttdavs/radix-trie.git"
   },
   "keywords": [
     "radix trie",
@@ -21,9 +21,9 @@
   "author": "Scott Davis",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/scttdavs/bst/issues"
+    "url": "https://github.com/scttdavs/radix-trie/issues"
   },
-  "homepage": "https://github.com/scttdavs/bst#readme",
+  "homepage": "https://github.com/scttdavs/radix-trie#readme",
   "devDependencies": {
     "coveralls": "^2.13.1",
     "mocha": "^3.5.3",
