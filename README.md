@@ -5,7 +5,7 @@
 
 ## Usage
 
-Once I publish it, install from NPM:
+Install from NPM:
 ```sh
 npm i radix-trie-js
 ```
