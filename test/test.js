@@ -152,4 +152,20 @@ describe("Radix Trie", () => {
       assert.deepEqual([...trie.entries()], [["b", "b"], ["bar", 15], ["barstool", false]]);
     });
   });
+
+  describe("Keys", () => {
+    it("returns all the keys of a trie", () => {
+      const trie = new Trie().add("bar", 15).add("barstool", false).add("b", "b");
+
+      assert.deepEqual([...trie.keys()], ["b", "bar", "barstool"]);
+    });
+  });
+
+  describe("Values", () => {
+    it("returns all the values of a trie", () => {
+      const trie = new Trie().add("bar", 15).add("barstool", false).add("b", "b");
+
+      assert.deepEqual([...trie.values()], ["b", 15, false]);
+    });
+  });
 });

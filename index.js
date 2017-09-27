@@ -40,6 +40,27 @@ const set = function(key, value) {
   }
 }
 
+const entries = function*(prefix = EMPTY_STRING,
+                          useKey = true,
+                          useValue = true) {
+  for (let [key, trie] of this.store) {
+    // already end of a word, so let's add it
+    const entireKey = prefix + key;
+    if (trie.value !== null) {
+      if (useKey && useValue) {
+        yield [entireKey, trie.value];
+      } else if (useKey) {
+        yield entireKey;
+      } else if (useValue) {
+        yield trie.value;
+      }
+    }
+
+    // get all possible results of child nodes
+    yield* entries.call(trie, entireKey, useKey, useValue);
+  }
+};
+
 class Trie {
   constructor(value = null) {
     this.value = value;
@@ -179,12 +200,15 @@ class Trie {
   }
 
   *entries(prefix = EMPTY_STRING) {
-    for (let [key, trie] of this.store) {
-      // already end of a word, so let's add it
-      if (trie.value !== null) yield [prefix + key, trie.value];
+    yield* entries.call(this, prefix);
+  }
 
-      yield* trie.entries(prefix + key); // get all possible results of child nodes
-    }
+  *keys(prefix = EMPTY_STRING) {
+    yield* entries.call(this, prefix, true, false);
+  }
+
+  *values(prefix = EMPTY_STRING) {
+    yield* entries.call(this, prefix, false, true);
   }
 };
 
