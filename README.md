@@ -15,6 +15,23 @@ const trie = new RadixTrie().add("foo", 5);
 
 ## Methods
 
+### add
+Inserts a key with the given value.
+```js
+const trie = new RadixTrie().add("bar", 4);
+```
+
+### delete
+Deletes a key/value pair.
+```js
+const trie = new RadixTrie().add("foo", 1).add("bar", 8);
+trie.get("foo"); // 1
+
+trie.delete("foo");
+
+trie.get("foo"); // null
+```
+
 ### get
 Gets the value for a given key.
 ```js
@@ -33,26 +50,12 @@ trie.has("bar");
 // true
 ```
 
-### add
-Inserts a key with the given value.
-```js
-const trie = new RadixTrie().add("bar", 4);
-```
-
-### delete
-Deletes a key/value pair.
-```js
-const trie = new RadixTrie().add("foo", 1).add("bar", 8);
-trie.get("foo"); // 1
-trie.delete("foo");
-trie.get("foo"); // null
-```
-
 ### fuzzyGet
 Returns an `iterator` for all the keys and values in the trie that match or partially match a given value.
 ```js
 const trie = new RadixTrie();
 trie.add("hi").add("hello", false);
+
 trie.fuzzyGet("h").next();
 // { value: ["hi", true], done: false }
 
@@ -66,10 +69,11 @@ Array.from(trie.fuzzyGet("hel"));
 ### entries
 Returns an `iterator` for all the keys and values in the trie.
 
-`NOTE:` that order cannot be preserved as a trie is constantly being compressed or expanded with each addition/deletion. In the below example, "ten" is first, but is remove later with the addition of "three", and the prefix "t" is added to consolidate them. So, now "five" will be first.
+`NOTE:` that order cannot be preserved as a trie is constantly being compressed or expanded with each addition/deletion. In the below example, "ten" is first, but is removed later with the addition of "three", and the prefix "t" is added to consolidate them. So, now "five" will be first.
 ```js
 const trie = new RadixTrie();
 trie.add("ten", 10).add("five", 5).add("three", 3);
+
 trie.entries().next();
 // { value: ["five", 5], done: false }
 
@@ -83,10 +87,11 @@ Array.from(trie.entries());
 ### keys
 Returns an `iterator` for all the keys in the trie.
 
-`NOTE:` that order cannot be preserved as a trie is constantly being compressed or expanded with each addition/deletion. In the below example, "ten" is first, but is remove later with the addition of "three", and the prefix "t" is added to consolidate them. So, now "five" will be first.
+`NOTE:` that order cannot be preserved as a trie is constantly being compressed or expanded with each addition/deletion. In the below example, "ten" is first, but is removed later with the addition of "three", and the prefix "t" is added to consolidate them. So, now "five" will be first.
 ```js
 const trie = new RadixTrie();
 trie.add("ten", 10).add("five", 5).add("three", 3);
+
 trie.keys().next();
 // { value: "five", done: false }
 
@@ -100,10 +105,11 @@ Array.from(trie.keys());
 ### values
 Returns an `iterator` for all the values in the trie.
 
-`NOTE:` that order cannot be preserved as a trie is constantly being compressed or expanded with each addition/deletion. In the below example, "ten" is first, but is remove later with the addition of "three", and the prefix "t" is added to consolidate them. So, now "five" will be first.
+`NOTE:` that order cannot be preserved as a trie is constantly being compressed or expanded with each addition/deletion. In the below example, "ten" is first, but is removed later with the addition of "three", and the prefix "t" is added to consolidate them. So, now "five" will be first.
 ```js
 const trie = new RadixTrie();
 trie.add("ten", 10).add("five", 5).add("three", 3);
+
 trie.values().next();
 // { value: 5, done: false }
 
