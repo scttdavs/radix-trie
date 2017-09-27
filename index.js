@@ -162,9 +162,8 @@ class Trie {
     }
   }
 
-  fuzzyGet(getKey,
-           matches = [],
-           prefix = EMPTY_STRING) {
+  *fuzzyGet(getKey,
+            prefix = EMPTY_STRING) {
     for (let [key, trie] of this.store) {
       if (key.indexOf(getKey) === 0 || getKey === null) {
         // when getKey is null, we want all the possible results
@@ -172,12 +171,11 @@ class Trie {
         // partial or complete match of the prefix
         if (trie.value !== null) {
           // already end of a word, so let's add it
-          matches.push([prefix + key, trie.value]);
+          yield [prefix + key, trie.value];
         }
-        trie.fuzzyGet(null, matches, prefix + key); // get all possible results of child nodes
+        yield* trie.fuzzyGet(null, prefix + key); // get all possible results of child nodes
       }
     }
-    return matches;
   }
 };
 

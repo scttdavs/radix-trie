@@ -31,13 +31,16 @@ trie.get("foo"); // null
 ```
 
 ### fuzzyGet
-Returns all the keys and values in the trie that match or partially match a given value.
+Returns an `iterator` for all the keys and values in the trie that match or partially match a given value.
 ```js
 const trie = new RadixTrie();
 trie.add("hi").add("hello", false);
-trie.fuzzyGet("h");
+trie.fuzzyGet("h").next();
+// { value: ["hi", true] done: false }
+
+[...trie.fuzzyGet("h")];
 // [ ["hi", true], ["hello", false]]
 
-trie.fuzzyGet("hel");
+Array.from(trie.fuzzyGet("hel"));
 // [ ["hello", false] ]
 ```
