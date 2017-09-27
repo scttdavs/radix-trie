@@ -113,3 +113,21 @@ trie.values().next();
 Array.from(trie.values());
 // [ 5, 10, 3 ]
 ```
+
+### forEach
+Executes a callback once for each key/value pair. It takes an optional second argument for a `this` value that the callback will be called with.
+```js
+const trie = new RadixTrie().add("bar", 15).add("barstool", false);
+
+let thisObj = {};
+const callback = function(key, value) {
+  this[key] = value;
+};
+
+trie.forEach(callback, thisObj);
+
+thisObj.bar;
+// 15
+thisObj.barstool;
+// false
+```

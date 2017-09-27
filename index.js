@@ -203,6 +203,12 @@ class Trie {
     }
   }
 
+  forEach(callback, thisArg = null) {
+    for (let [key, value] of this.entries()) {
+      callback.call(thisArg, key, value);
+    }
+  }
+
   *entries(prefix = EMPTY_STRING) {
     yield* entries.call(this, prefix);
   }

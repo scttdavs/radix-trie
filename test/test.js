@@ -182,4 +182,27 @@ describe("Radix Trie", () => {
       assert.deepEqual([...trie.values()], ["b", 15, false]);
     });
   });
+
+  describe("forEach", () => {
+    it("executes a callback once for each key/value pair.", () => {
+      const trie = new Trie().add("bar", 15).add("barstool", false).add("b", "b");
+
+      const values = ["b", 15, false];
+      const keys = ["b", "bar", "barstool"];
+      let returnedKeys = [];
+      let returnedValues = [];
+      let thisObj = {};
+      const callback = function(key, value) {
+        returnedValues.push(value);
+        returnedKeys.push(key);
+        this[key] = value;
+      };
+
+      trie.forEach(callback, thisObj);
+
+      assert.equal(thisObj.bar, 15);
+      assert.deepEqual(returnedValues, ["b", 15, false]);
+      assert.deepEqual(returnedKeys, ["b", "bar", "barstool"]);
+    });
+  });
 });
