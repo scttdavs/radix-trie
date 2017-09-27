@@ -36,11 +36,28 @@ Returns an `iterator` for all the keys and values in the trie that match or part
 const trie = new RadixTrie();
 trie.add("hi").add("hello", false);
 trie.fuzzyGet("h").next();
-// { value: ["hi", true] done: false }
+// { value: ["hi", true], done: false }
 
 [...trie.fuzzyGet("h")];
 // [ ["hi", true], ["hello", false]]
 
 Array.from(trie.fuzzyGet("hel"));
 // [ ["hello", false] ]
+```
+
+### entries
+Returns an `iterator` for all the keys and values in the trie.
+
+`NOTE:` that order cannot be preserved as a trie is constantly being compressed or expanded with each addition/deletion. In the below example, "ten" is first, but is remove later with the addition of "three", and the prefix "t" is added to consolidate them. So, now "five" will be first.
+```js
+const trie = new RadixTrie();
+trie.add("ten", 10).add("five", 5).add("three", 3);
+trie.entries().next();
+// { value: ["five", 5], done: false }
+
+[...trie.entries()];
+// [ [ "five", 5 ], [ "ten", 10 ], [ "three", 3 ] ]
+
+Array.from(trie.entries());
+// [ [ "five", 5 ], [ "ten", 10 ], [ "three", 3 ] ]
 ```

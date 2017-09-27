@@ -144,4 +144,12 @@ describe("Radix Trie", () => {
       assert.deepEqual([...trie.fuzzyGet("b")], [["b", "b"], ["bar", 15], ["barstool", false]]);
     });
   });
+
+  describe("Entries", () => {
+    it("returns all the entries of a trie", () => {
+      const trie = new Trie().add("bar", 15).add("barstool", false).add("b", "b");
+
+      assert.deepEqual([...trie.entries()], [["b", "b"], ["bar", 15], ["barstool", false]]);
+    });
+  });
 });

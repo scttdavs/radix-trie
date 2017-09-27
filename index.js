@@ -177,6 +177,15 @@ class Trie {
       }
     }
   }
+
+  *entries(prefix = EMPTY_STRING) {
+    for (let [key, trie] of this.store) {
+      // already end of a word, so let's add it
+      if (trie.value !== null) yield [prefix + key, trie.value];
+
+      yield* trie.entries(prefix + key); // get all possible results of child nodes
+    }
+  }
 };
 
 module.exports = Trie;
