@@ -157,6 +157,10 @@ class Trie {
     return root;
   }
 
+  has(key) {
+    return this.get(key) !== null;
+  }
+
   get(key) {
     // if the key exists already, return it
     if (this.store.has(key)) {

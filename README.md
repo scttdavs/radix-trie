@@ -15,8 +15,26 @@ const trie = new RadixTrie().add("foo", 5);
 
 ## Methods
 
+### get
+Gets the value for a given key.
+```js
+const trie = new RadixTrie().add("bar", 4);
+
+trie.get("bar");
+// 4
+```
+
+### has
+Returns true if the given value exists.
+```js
+const trie = new RadixTrie().add("bar", 4);
+
+trie.has("bar");
+// true
+```
+
 ### add
-Inserts a node with the given value.
+Inserts a key with the given value.
 ```js
 const trie = new RadixTrie().add("bar", 4);
 ```

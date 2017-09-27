@@ -131,6 +131,20 @@ describe("Radix Trie", () => {
     });
   });
 
+  describe("Has", () => {
+    it("returns true if a key exists", () => {
+      const trie = new Trie().add("bar", 15).add("barstool", false);
+
+      assert.equal(trie.has("barstool"), true);
+    });
+
+    it("returns false when a key does not exist", () => {
+      const trie = new Trie().add("bar", 15).add("barstool", false);
+
+      assert.equal(trie.has("barkeep"), false);
+    });
+  });
+
   describe("FuzzyGet", () => {
     it("gets a list of all key/value pairs that at least partially match a key", () => {
       const trie = new Trie().add("bar", 15).add("barstool", false);
