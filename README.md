@@ -44,17 +44,8 @@ trie.get("bar");
 // 4
 ```
 
-### has
-Returns true if the given value exists.
-```js
-const trie = new RadixTrie().add("bar", 4);
-
-trie.has("bar");
-// true
-```
-
 ### fuzzyGet
-Returns an `iterator` for all the keys and values in the trie that match or partially match a given value.
+Returns an `iterator` for all the keys and values in the trie that match or partially match a given value. This is similar to an autocomplete feature, which many tries are used for.
 ```js
 const trie = new RadixTrie();
 trie.add("hi").add("hello", false);
@@ -67,6 +58,15 @@ trie.fuzzyGet("h").next();
 
 Array.from(trie.fuzzyGet("hel"));
 // [ ["hello", false] ]
+```
+
+### has
+Returns true if the given value exists.
+```js
+const trie = new RadixTrie().add("bar", 4);
+
+trie.has("bar");
+// true
 ```
 
 ### entries
