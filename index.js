@@ -2,7 +2,7 @@
 
 const BREAK = "TRIE_BREAK_REDUCE";
 const EMPTY_STRING = "";
-const util = require("util");
+// const util = require("util");
 // ex. console.log(util.inspect(trie, false, null));
 
 // a reduce implementation you can "break" out of
@@ -101,31 +101,22 @@ class Trie {
 
       if (trie.store.size) {
         // has other nodes branching off, so just remove value
-        console.log("HIT", key);
         trie.value = null;
         return root === this ? root : this.store.size === 1; // if it equals 1, it is a redundant edge
 
       } else {
-
-
         // no other nodes, remove the whole entry
         this.store.delete(key);
-        console.log("HIT2", key, this.store.size === 1 && this.value === null, root === this);
         return root === this ? root : this.store.size === 1 && this.value === null; // if it equals 1, it is a redundant edge
       }
     } else {
       // check for partial hits
       let result;
-      let delKey;
-      let rkey;
-      reduceReverse(key, (reducedKey, originalDeleteKey, currentIndex) => {
+      const delKey = reduceReverse(key, (reducedKey, originalDeleteKey, currentIndex) => {
         // check for partial collisions over all existing keys
         for (let [originalKey, trie] of this.store) {
           if (originalKey === reducedKey) {
             const trie = this.store.get(originalKey);
-
-            delKey = originalKey;
-            rkey = originalDeleteKey.slice(reducedKey.length);
             result = this.store.get(reducedKey).delete(originalDeleteKey.slice(reducedKey.length), root);
 
             return BREAK;
@@ -133,9 +124,11 @@ class Trie {
         }
       });
       if (result === true) {
-        // only one child node was left, consolidate it
-        console.log("CONS", delKey, rkey)
-        set.call(this, delKey + this.store.get(delKey).store.keys().next().value, this.store.get(delKey).store.values().next().value);
+        // an edge was left redundant after deletion, so compact it
+        const redundantEdge = this.store.get(delKey).store.entries().next().value;
+        set.call(this,
+                 delKey + redundantEdge[0], // key
+                 redundantEdge[1]); // value
         this.store.delete(delKey);
       }
     }
@@ -146,7 +139,6 @@ class Trie {
   get(key) {
     // if the key exists already, return it
     if (this.store.has(key)) {
-      console.log("HIIIT", this.store.get(key).value);
       return this.store.get(key).value;
     }
 
@@ -163,7 +155,6 @@ class Trie {
     }, EMPTY_STRING);
 
     if (this.store.has(getKey)) {
-      console.log("NEW", this.store.get(getKey).get(key.slice(getIndex)))
       return this.store.get(getKey).get(key.slice(getIndex));
     } else {
       // no matches

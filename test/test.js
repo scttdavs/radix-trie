@@ -104,12 +104,10 @@ describe("Radix Trie", () => {
     it("chains deletes and additions together", () => {
       const trie = new Trie().add("dog").add("doge").add("dogs");
 
-      console.log(util.inspect(trie, false, null));
       assert.equal(trie.get("doge"), true);
       assert.equal(trie.get("dog"), true);
       trie.delete("dog").delete("doge");
 
-      console.log(util.inspect(trie, false, null));
       assert.equal(trie.get("doge"), null);
       assert.equal(trie.get("dogs"), true);
       assert.equal(trie.get("dog"), null);
