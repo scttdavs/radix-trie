@@ -36,8 +36,25 @@ const set = function(key, value) {
   if (value instanceof Trie) {
     this.store.set(key, value);
   } else {
-    this.store.set(key, new Trie(value));
+    this.store.set(key, new Trie(value, false));
   }
+}
+
+const addMany = function(keyValueMap) {
+  if (keyValueMap instanceof Object) {
+    if (Array.isArray(keyValueMap)) {
+      keyValueMap.forEach(pair => this.add(...pair));
+    } else {
+      Object.getOwnPropertyNames(keyValueMap).forEach(key => this.add(key, keyValueMap[key]));
+    }
+  };
+  if (keyValueMap instanceof Map) keyValueMap.forEach((v, k) => this.add(k, v));
+};
+
+const canIterate = (value) => {
+  return Array.isArray(value) ||
+          value instanceof Map ||
+          value instanceof Object;
 }
 
 const entries = function*(prefix = EMPTY_STRING,
@@ -63,12 +80,24 @@ const entries = function*(prefix = EMPTY_STRING,
 };
 
 class Trie {
-  constructor(value = null) {
-    this.value = value;
+  constructor(value = null, isRoot = true) {
     this.store = new Map();
+
+    if (isRoot) {
+      this.value = null;
+      if (canIterate(value)) addMany.call(this, value);
+    } else {
+      this.value = value;
+    }
   }
 
   add(key, value = true, root = this) {
+    if (canIterate(key)) {
+      // passing in either an array, map or object of keys and values
+      addMany.call(this, key);
+      return root;
+    }
+
     // if the key exists already, overwrite it
     if (this.store.has(key)) {
       this.store.get(key).value = value; // only overwrite value

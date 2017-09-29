@@ -16,12 +16,51 @@ const RadixTrie = require("radix-trie-js");
 const trie = new RadixTrie().add("foo", 5);
 ```
 
+or create the tree from an object, array or map:
+```js
+const trie = new Trie([
+  ["foo", 5],
+  ["foobar", 9]
+]);
+
+const trie = new Trie({
+  foo: 5,
+  foobar: 9
+});
+
+const map = new Map([
+  ["foo", 5],
+  ["foobar", 9]
+]);
+const trie = new Trie(map);
+```
+
+
 ## Methods
 
 ### add
 Inserts a key with the given value.
 ```js
 const trie = new RadixTrie().add("bar", 4);
+```
+
+or insert many at once:
+```js
+const trie = new Trie().add([
+  ["foo", 5],
+  ["foobar", 9]
+]);
+
+const map = new Map([
+  ["foo", 5],
+  ["foobar", 9]
+]);
+const trie = new Trie().add(map);
+
+const trie = new Trie().add({
+  foo: 5,
+  foobar: 9
+});
 ```
 
 ### delete

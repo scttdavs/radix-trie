@@ -13,6 +13,37 @@ describe("Radix Trie", () => {
       assert.equal(trie.get("foo"), 5);
     });
 
+    it("add values to the tree from an array to the constructor.", () => {
+      const trie = new Trie([
+        ["foo", 5],
+        ["foos", 9]
+      ]);
+
+      assert.equal(trie.get("foo"), 5);
+      assert.equal(trie.get("foos"), 9);
+    });
+
+    it("add values to the tree from a map to the constructor.", () => {
+      const map = new Map([
+        ["foo", 5],
+        ["foos", 9]
+      ]);
+      const trie = new Trie(map);
+
+      assert.equal(trie.get("foo"), 5);
+      assert.equal(trie.get("foos"), 9);
+    });
+
+    it("add values to the tree from an object to the constructor.", () => {
+      const trie = new Trie({
+        foo: 5,
+        foos: 9
+      });
+
+      assert.equal(trie.get("foo"), 5);
+      assert.equal(trie.get("foos"), 9);
+    });
+
     it("should only overwrite value.", () => {
       const trie = new Trie().add("foo", 5).add("foos", 4);
       assert.equal(trie.get("foo"), 5);
@@ -20,6 +51,37 @@ describe("Radix Trie", () => {
       trie.add("foo", 6);
       assert.equal(trie.get("foo"), 6);
       assert.equal(trie.get("foos"), 4);
+    });
+
+    it("add values to the tree from an array.", () => {
+      const trie = new Trie().add([
+        ["foo", 5],
+        ["foos", 9]
+      ]);
+
+      assert.equal(trie.get("foo"), 5);
+      assert.equal(trie.get("foos"), 9);
+    });
+
+    it("add values to the tree from a map.", () => {
+      const map = new Map([
+        ["foo", 5],
+        ["foos", 9]
+      ]);
+      const trie = new Trie().add(map);
+
+      assert.equal(trie.get("foo"), 5);
+      assert.equal(trie.get("foos"), 9);
+    });
+
+    it("add values to the tree from an object.", () => {
+      const trie = new Trie().add({
+        foo: 5,
+        foos: 9
+      });
+
+      assert.equal(trie.get("foo"), 5);
+      assert.equal(trie.get("foos"), 9);
     });
 
     it("add two values to the tree, compressed.", () => {
