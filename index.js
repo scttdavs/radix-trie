@@ -44,8 +44,9 @@ const entries = function*(prefix = EMPTY_STRING,
                           useKey = true,
                           useValue = true) {
   for (let [key, trie] of this.store) {
-    // already end of a word, so let's add it
     const entireKey = prefix + key;
+
+    // already end of a word, so let's add it
     if (trie.value !== null) {
       if (useKey && useValue) {
         yield [entireKey, trie.value];
@@ -192,13 +193,14 @@ class Trie {
     for (let [key, trie] of this.store) {
       if (key.indexOf(getKey) === 0 || getKey === null) {
         // when getKey is null, we want all the possible results
-
         // partial or complete match of the prefix
-        if (trie.value !== null) {
-          // already end of a word, so let's add it
-          yield [prefix + key, trie.value];
-        }
-        yield* trie.fuzzyGet(null, prefix + key); // get all possible results of child nodes
+
+        const entireKey = prefix + key;
+
+        // already end of a word, so let's add it
+        if (trie.value !== null) yield [entireKey, trie.value];
+
+        yield* trie.fuzzyGet(null, entireKey); // get all possible results of child nodes
       }
     }
   }
