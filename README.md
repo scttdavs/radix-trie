@@ -84,19 +84,19 @@ trie.get("bar");
 ```
 
 ### fuzzyGet
-Returns an `iterator` for all the keys and values in the trie that match or partially match a given value. This is similar to an autocomplete feature, which many tries are used for.
+Returns an `iterator` for all the keys and values in the trie that match or partially match a given value regardless of case (upper or lowercase). This is similar to an autocomplete feature, which many tries are used for.
 ```js
 const trie = new RadixTrie();
-trie.add("hi").add("hello", false);
+trie.add("hi").add("Hello", false);
 
 trie.fuzzyGet("h").next();
 // { value: ["hi", true], done: false }
 
 [...trie.fuzzyGet("h")];
-// [ ["hi", true], ["hello", false]]
+// [ ["hi", true], ["Hello", false]]
 
 Array.from(trie.fuzzyGet("hel"));
-// [ ["hello", false] ]
+// [ ["Hello", false] ]
 ```
 
 ### has
