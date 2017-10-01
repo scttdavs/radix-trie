@@ -222,24 +222,26 @@ describe("Radix Trie", () => {
 
     it("searches regardless of case.", () => {
       const names = require("./names");
-      const results = new Trie(names).fuzzyGet("Sc");
+      const results = new Trie(names).fuzzyGet("sc");
       const resultsArr = [...results];
 
       console.log(resultsArr);
       // console.log(util.inspect(new Trie(names), false, null));
 
       assert.equal(resultsArr.length, 2);
+      assert.equal(resultsArr[1][0], "Scott");
     });
 
-    it("searches regardless of case. 2", () => {
+    it("searches regardless of case #2.", () => {
       const names = require("./names");
-      const results = new Trie(names).fuzzyGet("John");
+      const results = new Trie(names).fuzzyGet("john");
       const resultsArr = [...results];
 
       console.log(resultsArr);
       // console.log(util.inspect(new Trie(names), false, null));
 
       assert.equal(resultsArr.length, 4);
+      assert.equal(resultsArr[3][0], "Johnny");
     });
   });
 

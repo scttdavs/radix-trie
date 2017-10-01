@@ -79,6 +79,12 @@ const entries = function*(prefix = EMPTY_STRING,
   }
 };
 
+const checkFuzzyGetHit = function*(entireKey, trie, newSearch = null) {
+  if (trie.value !== null) yield [entireKey, trie.value];
+
+  yield* trie.fuzzyGet(newSearch, entireKey);
+};
+
 class Trie {
   constructor(value = null, isRoot = true) {
     this.store = new Map();
@@ -221,48 +227,25 @@ class Trie {
             prefix = EMPTY_STRING) {
     for (let [key, trie] of this.store) {
       // already end of a word, so let's add it
-      if (getKey === key) {
-        if (trie.value !== null) yield [prefix + key, trie.value];
-
-        yield* trie.fuzzyGet(null, prefix + key);
+      if (getKey !== null && getKey.toLowerCase() === key.toLowerCase()) {
+        yield* checkFuzzyGetHit(prefix + key, trie);
       } else {
         // search for substring hits
         if (getKey === null) {
           // had a previous hit, so return all subsequent results
-          const entireKey = prefix + key;
-          if (trie.value !== null) yield [entireKey, trie.value];
-
-          yield* trie.fuzzyGet(null, entireKey);
+          yield* checkFuzzyGetHit(prefix + key, trie);
         } else {
           // loop backwards throught the search term and see if there is a hit
           for (let i = getKey.length; i > 0; i--) {
             const currentPrefix = getKey.slice(0, i);
-
-            if (key.indexOf(currentPrefix) === 0) {
-              if (trie.value !== null) yield [prefix + key, trie.value];
-
-              yield* trie.fuzzyGet(getKey.length === 1 ? null : getKey.slice(i),
-                                   prefix + key); // get all possible results of child nodes
+            if (key.toLowerCase().indexOf(currentPrefix.toLowerCase()) === 0) {
+              yield* checkFuzzyGetHit(prefix + key,
+                                      trie,
+                                      getKey.length === 1 ? null : getKey.slice(i));
             }
           }
         }
-
       }
-
-
-
-
-      // if (getKey === null || getKey.indexOf(key) === 0) {
-      //   // when getKey is null, we want all the possible results
-      //   // partial or complete match of the prefix
-      //
-      //   const entireKey = prefix + key;
-      //
-      //   // already end of a word, so let's add it
-      //   if (trie.value !== null) yield [entireKey, trie.value];
-      //
-      //   yield* trie.fuzzyGet(null, entireKey); // get all possible results of child nodes
-      // }
     }
   }
 
