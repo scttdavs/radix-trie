@@ -219,6 +219,28 @@ describe("Radix Trie", () => {
 
       assert.deepEqual([...trie.fuzzyGet("b")], [["b", "b"], ["bar", 15], ["barstool", false]]);
     });
+
+    it("searches regardless of case.", () => {
+      const names = require("./names");
+      const results = new Trie(names).fuzzyGet("Sc");
+      const resultsArr = [...results];
+
+      console.log(resultsArr);
+      // console.log(util.inspect(new Trie(names), false, null));
+
+      assert.equal(resultsArr.length, 2);
+    });
+
+    it("searches regardless of case. 2", () => {
+      const names = require("./names");
+      const results = new Trie(names).fuzzyGet("John");
+      const resultsArr = [...results];
+
+      console.log(resultsArr);
+      // console.log(util.inspect(new Trie(names), false, null));
+
+      assert.equal(resultsArr.length, 4);
+    });
   });
 
   describe("Entries", () => {
