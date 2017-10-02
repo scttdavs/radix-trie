@@ -225,9 +225,6 @@ describe("Radix Trie", () => {
       const results = new Trie(names).fuzzyGet("sc");
       const resultsArr = [...results];
 
-      console.log(resultsArr);
-      // console.log(util.inspect(new Trie(names), false, null));
-
       assert.equal(resultsArr.length, 2);
       assert.equal(resultsArr[1][0], "Scott");
     });
@@ -237,11 +234,16 @@ describe("Radix Trie", () => {
       const results = new Trie(names).fuzzyGet("john");
       const resultsArr = [...results];
 
-      console.log(resultsArr);
-      // console.log(util.inspect(new Trie(names), false, null));
-
       assert.equal(resultsArr.length, 4);
       assert.equal(resultsArr[3][0], "Johnny");
+    });
+
+    it("should return no results for a key that does not exist.", () => {
+      const names = require("./names");
+      const results = new Trie(names).fuzzyGet("zelda");
+      const resultsArr = [...results];
+
+      assert.equal(resultsArr.length, 0);
     });
   });
 

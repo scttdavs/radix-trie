@@ -236,6 +236,8 @@ class Trie {
           yield* checkFuzzyGetHit(prefix + key, trie);
         } else {
           // loop backwards throught the search term and see if there is a hit
+          if (getKey[0].toLowerCase() !== key[0].toLowerCase()) continue; // short circuit if it will never be a hit
+
           for (let i = getKey.length; i > 0; i--) {
             const currentPrefix = getKey.slice(0, i);
             if (key.toLowerCase().indexOf(currentPrefix.toLowerCase()) === 0) {
