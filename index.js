@@ -225,25 +225,27 @@ class Trie {
 
   *fuzzyGet(getKey,
             prefix = EMPTY_STRING) {
+    const getKeyLowerCase = getKey === null ? null : getKey.toLowerCase();
     for (let [key, trie] of this.store) {
+      const keyLowerCase = key.toLowerCase();
       // already end of a word, so let's add it
-      if (getKey !== null && getKey.toLowerCase() === key.toLowerCase()) {
+      if (getKeyLowerCase !== null && getKeyLowerCase === keyLowerCase) {
         yield* checkFuzzyGetHit(prefix + key, trie);
       } else {
         // search for substring hits
-        if (getKey === null) {
+        if (getKeyLowerCase === null) {
           // had a previous hit, so return all subsequent results
           yield* checkFuzzyGetHit(prefix + key, trie);
         } else {
           // loop backwards throught the search term and see if there is a hit
-          if (getKey[0].toLowerCase() !== key[0].toLowerCase()) continue; // short circuit if it will never be a hit
+          if (getKeyLowerCase[0] !== keyLowerCase[0]) continue; // short circuit if it will never be a hit
 
-          for (let i = getKey.length; i > 0; i--) {
-            const currentPrefix = getKey.slice(0, i);
-            if (key.toLowerCase().indexOf(currentPrefix.toLowerCase()) === 0) {
+          for (let i = getKeyLowerCase.length; i > 0; i--) {
+            const currentPrefix = getKeyLowerCase.slice(0, i);
+            if (keyLowerCase.indexOf(currentPrefix) === 0) {
               yield* checkFuzzyGetHit(prefix + key,
                                       trie,
-                                      getKey.length === 1 ? null : getKey.slice(i));
+                                      getKeyLowerCase.length === 1 ? null : getKeyLowerCase.slice(i));
             }
           }
         }
