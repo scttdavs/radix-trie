@@ -1,6 +1,6 @@
 {
   "name": "radix-trie-js",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Radix Trie in Javascript",
   "main": "index.js",
   "scripts": {
