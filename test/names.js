@@ -97,7 +97,7 @@ const namesArr = [
 "Rudolf", "Rudolph", "Rudy", "Rupert", "Russ", "Russell", "Rusty", "Ruth", "Saad", "Sabrina", "Saify",
 "Saiid", "Sal", "Sally", "Sam", "Samir", "Samuel", "Sanand", "Sanche", "Sandeep", "Sandip", "Sandra",
 "Sandy", "Sanford", "Sangho", "Sanity", "Sanjay", "Sanjeev", "Sanjib", "Santa", "Saqib", "Sarah", "Sassan",
-"Saul", "Saumya", "Scot", "Scott", "Sean", "Sedat", "Sedovic", "Seenu", "Sehyo", "Sekar", "Serdar",
+"Saul", "Saumya", "Scot", "Scott", "scott", "Sean", "Sedat", "Sedovic", "Seenu", "Sehyo", "Sekar", "Serdar",
 "Sergeant", "Sergei", "Sergio", "Sergiu", "Seth", "Seymour", "Shadow", "Shahid", "Shai", "Shakil", "Shamim",
 "Shane", "Shankar", "Shannon", "Sharada", "Sharan", "Shari", "Sharon", "Shatter", "Shaw", "Shawn", "Shean",
 "Sheila", "Shel", "Sherman", "Sherri", "Shirley", "Sho", "Shutoku", "Shuvra", "Shyam", "Sid", "Sidney",

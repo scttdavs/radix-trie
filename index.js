@@ -246,6 +246,7 @@ class Trie {
               yield* checkFuzzyGetHit(prefix + key,
                                       trie,
                                       getKeyLowerCase.length === 1 ? null : getKeyLowerCase.slice(i));
+              break;
             }
           }
         }

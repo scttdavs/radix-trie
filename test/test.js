@@ -225,8 +225,9 @@ describe("Radix Trie", () => {
       const results = new Trie(names).fuzzyGet("sc");
       const resultsArr = [...results];
 
-      assert.equal(resultsArr.length, 2);
+      assert.equal(resultsArr.length, 3);
       assert.equal(resultsArr[1][0], "Scott");
+      assert.equal(resultsArr[2][0], "scott");
     });
 
     it("searches regardless of case #2.", () => {
