@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.0.4
+## v1.0.5
 - make the public function signatures of `entries`, `keys`, `values`, and `fuzzyGet` match what the docs show, hiding away the internal API from the user.
 
 ## v1.0.0
