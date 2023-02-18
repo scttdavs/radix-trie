@@ -256,6 +256,14 @@ describe("Radix Trie", () => {
     });
   });
 
+  describe("toJSON", () => {
+    it("converts all entries to stringified JSON", () => {
+      const trie = new Trie().add("bar", 15).add("barstool", false).add("b", "b");
+
+      assert.equal(trie.toJSON(), '{"b":"b","bar":15,"barstool":false}');
+    });
+  });
+
   describe("Keys", () => {
     it("returns all the keys of a trie", () => {
       const trie = new Trie().add("bar", 15).add("barstool", false).add("b", "b");
