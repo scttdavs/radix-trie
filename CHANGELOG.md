@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.1.0
+
+- add toJSON method for serialization.
+- devDependency security updates
+
 ## v1.0.6
 
 - update dependencies to fix security vulnerabilities.

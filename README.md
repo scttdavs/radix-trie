@@ -181,6 +181,21 @@ Array.from(trie.values());
 // [ 5, 10, 3 ]
 ```
 
+### toJSON
+
+Returns stringified JSON of all entries.
+
+```js
+const trie = new RadixTrie({
+  ten: 10,
+  active: false,
+  hello: "world"
+});
+
+trie.toJSON();
+// {"ten":10,"active":false,"hello":"world"}
+```
+
 ### forEach
 
 Executes a callback once for each key/value pair. It takes an optional second argument for a `this` value that the callback will be called with.
