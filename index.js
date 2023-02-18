@@ -256,6 +256,14 @@ class Trie {
     }
   }
 
+  toJSON() {
+    const result = {}
+    for (let [key, value] of this.entries()) {
+      result[key] = value;
+    }
+    return JSON.stringify(result)
+  }
+
   *fuzzyGet(getKey) {
     yield* fuzzyGet.call(this, getKey);
   }
