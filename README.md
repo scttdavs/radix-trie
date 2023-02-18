@@ -186,8 +186,11 @@ Array.from(trie.values());
 Returns stringified JSON of all entries.
 
 ```js
-const trie = new RadixTrie();
-trie.add("ten", 10).add("active", false).add("hello", "world");
+const trie = new RadixTrie({
+  ten: 10,
+  active: false,
+  hello: "world"
+});
 
 trie.toJSON();
 // {"ten":10,"active":false,"hello":"world"}
