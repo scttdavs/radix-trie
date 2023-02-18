@@ -1,9 +1,11 @@
 # Radix Trie (in Javascript)
+
 [![NPM](https://img.shields.io/npm/v/radix-trie-js.svg)](https://www.npmjs.com/package/radix-trie-js)
 
 ## Usage
 
 Install from NPM:
+
 ```sh
 npm i radix-trie-js
 ```
@@ -15,54 +17,59 @@ const trie = new RadixTrie().add("foo", 5);
 ```
 
 or create the tree from an object, array or map:
+
 ```js
 const trie = new Trie([
   ["foo", 5],
-  ["foobar", 9]
+  ["foobar", 9],
 ]);
 
 const trie = new Trie({
   foo: 5,
-  foobar: 9
+  foobar: 9,
 });
 
 const map = new Map([
   ["foo", 5],
-  ["foobar", 9]
+  ["foobar", 9],
 ]);
 const trie = new Trie(map);
 ```
 
-
 ## Methods
 
 ### add
+
 Inserts a key with the given value.
+
 ```js
 const trie = new RadixTrie().add("bar", 4);
 ```
 
 or insert many at once:
+
 ```js
 const trie = new Trie().add([
   ["foo", 5],
-  ["foobar", 9]
+  ["foobar", 9],
 ]);
 
 const map = new Map([
   ["foo", 5],
-  ["foobar", 9]
+  ["foobar", 9],
 ]);
 const trie = new Trie().add(map);
 
 const trie = new Trie().add({
   foo: 5,
-  foobar: 9
+  foobar: 9,
 });
 ```
 
 ### delete
+
 Deletes a key/value pair.
+
 ```js
 const trie = new RadixTrie().add("foo", 1).add("bar", 8);
 trie.get("foo"); // 1
@@ -73,7 +80,9 @@ trie.get("foo"); // null
 ```
 
 ### get
+
 Gets the value for a given key.
+
 ```js
 const trie = new RadixTrie().add("bar", 4);
 
@@ -82,7 +91,9 @@ trie.get("bar");
 ```
 
 ### fuzzyGet
+
 Returns an `iterator` for all the keys and values in the trie that match or partially match a given value regardless of case (upper or lowercase). This is similar to an autocomplete feature, which many tries are used for.
+
 ```js
 const trie = new RadixTrie();
 trie.add("hi").add("Hello", false);
@@ -98,7 +109,9 @@ Array.from(trie.fuzzyGet("hel"));
 ```
 
 ### has
+
 Returns true if the given value exists.
+
 ```js
 const trie = new RadixTrie().add("bar", 4);
 
@@ -107,9 +120,11 @@ trie.has("bar");
 ```
 
 ### entries
+
 Returns an `iterator` for all the keys and values in the trie.
 
 `NOTE:` that order cannot be preserved as a trie is constantly being compressed or expanded with each addition/deletion. In the below example, "ten" is first, but is removed later with the addition of "three", and the prefix "t" is added to consolidate them. So, now "five" will be first.
+
 ```js
 const trie = new RadixTrie();
 trie.add("ten", 10).add("five", 5).add("three", 3);
@@ -125,9 +140,11 @@ Array.from(trie.entries());
 ```
 
 ### keys
+
 Returns an `iterator` for all the keys in the trie.
 
 `NOTE:` that order cannot be preserved as a trie is constantly being compressed or expanded with each addition/deletion. In the below example, "ten" is first, but is removed later with the addition of "three", and the prefix "t" is added to consolidate them. So, now "five" will be first.
+
 ```js
 const trie = new RadixTrie();
 trie.add("ten", 10).add("five", 5).add("three", 3);
@@ -143,9 +160,11 @@ Array.from(trie.keys());
 ```
 
 ### values
+
 Returns an `iterator` for all the values in the trie.
 
 `NOTE:` that order cannot be preserved as a trie is constantly being compressed or expanded with each addition/deletion. In the below example, "ten" is first, but is removed later with the addition of "three", and the prefix "t" is added to consolidate them. So, now "five" will be first.
+
 ```js
 const trie = new RadixTrie();
 trie.add("ten", 10).add("five", 5).add("three", 3);
@@ -161,12 +180,14 @@ Array.from(trie.values());
 ```
 
 ### forEach
+
 Executes a callback once for each key/value pair. It takes an optional second argument for a `this` value that the callback will be called with.
+
 ```js
 const trie = new RadixTrie().add("bar", 15).add("barstool", false);
 
 let thisObj = {};
-const callback = function(key, value) {
+const callback = function (key, value) {
   this[key] = value;
 };
 
