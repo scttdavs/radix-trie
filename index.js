@@ -27,40 +27,43 @@ const reduceReverse = (result, callback) => {
     // if this is reached, it didn't break so return the original
     // if the loop ends here since no match was found
     current = result;
-
   }
   return current;
 };
 
-const set = function(key, value) {
+const set = function (key, value) {
   if (value instanceof Trie) {
     this.store.set(key, value);
   } else {
     this.store.set(key, new Trie(value, false));
   }
-}
+};
 
-const addMany = function(keyValueMap) {
+const addMany = function (keyValueMap) {
   if (keyValueMap instanceof Object) {
     if (Array.isArray(keyValueMap)) {
-      keyValueMap.forEach(pair => this.add(...pair));
+      keyValueMap.forEach((pair) => this.add(...pair));
     } else {
-      Object.getOwnPropertyNames(keyValueMap).forEach(key => this.add(key, keyValueMap[key]));
+      Object.getOwnPropertyNames(keyValueMap).forEach((key) =>
+        this.add(key, keyValueMap[key])
+      );
     }
-  };
+  }
   if (keyValueMap instanceof Map) keyValueMap.forEach((v, k) => this.add(k, v));
 };
 
 const canIterate = (value) => {
-  return Array.isArray(value) ||
-          value instanceof Map ||
-          value instanceof Object;
-}
+  return (
+    Array.isArray(value) || value instanceof Map || value instanceof Object
+  );
+};
 
 // used outside of class definition to make function signature part of private api
-const entries = function*(prefix = EMPTY_STRING,
-                          useKey = true,
-                          useValue = true) {
+const entries = function* (
+  prefix = EMPTY_STRING,
+  useKey = true,
+  useValue = true
+) {
   for (let [key, trie] of this.store) {
     const entireKey = prefix + key;
 
@@ -81,8 +84,7 @@ const entries = function*(prefix = EMPTY_STRING,
 };
 
 // used outside of class definition to make function signature part of private api
-const fuzzyGet = function*(getKey,
-          prefix = EMPTY_STRING) {
+const fuzzyGet = function* (getKey, prefix = EMPTY_STRING) {
   const getKeyLowerCase = getKey === null ? null : getKey.toLowerCase();
   for (let [key, trie] of this.store) {
     const keyLowerCase = key.toLowerCase();
@@ -101,9 +103,11 @@ const fuzzyGet = function*(getKey,
         for (let i = getKeyLowerCase.length; i > 0; i--) {
           const currentPrefix = getKeyLowerCase.slice(0, i);
           if (keyLowerCase.indexOf(currentPrefix) === 0) {
-            yield* checkFuzzyGetHit(prefix + key,
-                                    trie,
-                                    getKeyLowerCase.length === 1 ? null : getKeyLowerCase.slice(i));
+            yield* checkFuzzyGetHit(
+              prefix + key,
+              trie,
+              getKeyLowerCase.length === 1 ? null : getKeyLowerCase.slice(i)
+            );
             break;
           }
         }
@@ -112,7 +116,7 @@ const fuzzyGet = function*(getKey,
   }
 };
 
-const checkFuzzyGetHit = function*(entireKey, trie, newSearch = null) {
+const checkFuzzyGetHit = function* (entireKey, trie, newSearch = null) {
   if (trie.value !== null) yield [entireKey, trie.value];
 
   yield* fuzzyGet.call(trie, newSearch, entireKey);
@@ -144,37 +148,45 @@ class Trie {
     }
 
     let didNotloop = true;
-    const addKey = reduceReverse(key, (reducedKey, originalAddKey, currentIndex) => {
-      // check for partial collisions over all existing keys
-      for (let [originalKey, trie] of this.store) {
-        if (originalKey.indexOf(reducedKey) === 0) {
-          // partial match of an existing prefix
+    const addKey = reduceReverse(
+      key,
+      (reducedKey, originalAddKey, currentIndex) => {
+        // check for partial collisions over all existing keys
+        for (let [originalKey, trie] of this.store) {
+          if (originalKey.indexOf(reducedKey) === 0) {
+            // partial match of an existing prefix
 
-          didNotloop = false;
-          if (originalKey === reducedKey) {
-            // exact match found
-            this.store.get(originalKey).add(key.slice(currentIndex), value);
-          } else {
-            // partial collision found
-            if (reducedKey == key) {
-              // the reducedKey is the full key we are inserting, so add the value
-              set.call(this, reducedKey, value);
+            didNotloop = false;
+            if (originalKey === reducedKey) {
+              // exact match found
+              this.store.get(originalKey).add(key.slice(currentIndex), value);
             } else {
-              set.call(this, reducedKey);
-            }
-            // set the exiting collided-with key/value
-            set.call(this.store.get(reducedKey), originalKey.slice(reducedKey.length), trie);
-            this.store.delete(originalKey); // clean up and delete the old one
+              // partial collision found
+              if (reducedKey == key) {
+                // the reducedKey is the full key we are inserting, so add the value
+                set.call(this, reducedKey, value);
+              } else {
+                set.call(this, reducedKey);
+              }
+              // set the exiting collided-with key/value
+              set.call(
+                this.store.get(reducedKey),
+                originalKey.slice(reducedKey.length),
+                trie
+              );
+              this.store.delete(originalKey); // clean up and delete the old one
 
-            // save current one too if there are more letters in the key
-            // that still need to be added
-            if (reducedKey !== key) this.store.get(reducedKey).add(key.slice(currentIndex), value);
+              // save current one too if there are more letters in the key
+              // that still need to be added
+              if (reducedKey !== key)
+                this.store.get(reducedKey).add(key.slice(currentIndex), value);
+            }
+            // no need to keep iterating, found the largest common prefix
+            return BREAK;
           }
-          // no need to keep iterating, found the largest common prefix
-          return BREAK;
         }
       }
-    });
+    );
 
     if (addKey === key && didNotloop) {
       // no other leafs matched or partially matched, so save it here
@@ -193,32 +205,43 @@ class Trie {
         // has other nodes branching off, so just remove value
         trie.value = null;
         return root === this ? root : this.store.size === 1; // if it equals 1, it is a redundant edge
-
       } else {
         // no other nodes, remove the whole entry
         this.store.delete(key);
-        return root === this ? root : this.store.size === 1 && this.value === null; // if it equals 1, it is a redundant edge
+        return root === this
+          ? root
+          : this.store.size === 1 && this.value === null; // if it equals 1, it is a redundant edge
       }
     } else {
       // check for partial hits
       let result;
-      const delKey = reduceReverse(key, (reducedKey, originalDeleteKey, currentIndex) => {
-        // check for partial collisions over all existing keys
-        for (let [originalKey, trie] of this.store) {
-          if (originalKey === reducedKey) {
-            const trie = this.store.get(originalKey);
-            result = this.store.get(reducedKey).delete(originalDeleteKey.slice(reducedKey.length), root);
+      const delKey = reduceReverse(
+        key,
+        (reducedKey, originalDeleteKey, currentIndex) => {
+          // check for partial collisions over all existing keys
+          for (let [originalKey, trie] of this.store) {
+            if (originalKey === reducedKey) {
+              const trie = this.store.get(originalKey);
+              result = this.store
+                .get(reducedKey)
+                .delete(originalDeleteKey.slice(reducedKey.length), root);
 
-            return BREAK;
+              return BREAK;
+            }
           }
         }
-      });
+      );
       if (result === true) {
         // an edge was left redundant after deletion, so compact it
-        const redundantEdge = this.store.get(delKey).store.entries().next().value;
-        set.call(this,
-                 delKey + redundantEdge[0], // key
-                 redundantEdge[1]); // value
+        const redundantEdge = this.store
+          .get(delKey)
+          .store.entries()
+          .next().value;
+        set.call(
+          this,
+          delKey + redundantEdge[0], // key
+          redundantEdge[1]
+        ); // value
         this.store.delete(delKey);
       }
     }
@@ -237,16 +260,20 @@ class Trie {
     }
 
     let getIndex;
-    const getKey = reduce(key.split(""), (newKey, letter, currentIndex, array) => {
-      // if this iteration of the key exists, get the value from that
-      // node with the remaining key's letters
-      if (this.store.has(newKey)) {
-        getIndex = currentIndex; // save the current index so we know where to split the key
-        return BREAK;
-      }
+    const getKey = reduce(
+      key.split(""),
+      (newKey, letter, currentIndex, array) => {
+        // if this iteration of the key exists, get the value from that
+        // node with the remaining key's letters
+        if (this.store.has(newKey)) {
+          getIndex = currentIndex; // save the current index so we know where to split the key
+          return BREAK;
+        }
 
-      return newKey + letter;
-    }, EMPTY_STRING);
+        return newKey + letter;
+      },
+      EMPTY_STRING
+    );
 
     if (this.store.has(getKey)) {
       return this.store.get(getKey).get(key.slice(getIndex));
@@ -257,11 +284,11 @@ class Trie {
   }
 
   toJSON() {
-    const result = {}
+    const result = {};
     for (let [key, value] of this.entries()) {
       result[key] = value;
     }
-    return JSON.stringify(result)
+    return JSON.stringify(result);
   }
 
   *fuzzyGet(getKey) {
@@ -285,6 +312,6 @@ class Trie {
   *values() {
     yield* entries.call(this, EMPTY_STRING, false, true);
   }
-};
+}
 
 module.exports = Trie;

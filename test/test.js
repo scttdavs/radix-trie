@@ -16,7 +16,7 @@ describe("Radix Trie", () => {
     it("add values to the tree from an array to the constructor.", () => {
       const trie = new Trie([
         ["foo", 5],
-        ["foos", 9]
+        ["foos", 9],
       ]);
 
       assert.equal(trie.get("foo"), 5);
@@ -26,7 +26,7 @@ describe("Radix Trie", () => {
     it("add values to the tree from a map to the constructor.", () => {
       const map = new Map([
         ["foo", 5],
-        ["foos", 9]
+        ["foos", 9],
       ]);
       const trie = new Trie(map);
 
@@ -37,7 +37,7 @@ describe("Radix Trie", () => {
     it("add values to the tree from an object to the constructor.", () => {
       const trie = new Trie({
         foo: 5,
-        foos: 9
+        foos: 9,
       });
 
       assert.equal(trie.get("foo"), 5);
@@ -56,7 +56,7 @@ describe("Radix Trie", () => {
     it("add values to the tree from an array.", () => {
       const trie = new Trie().add([
         ["foo", 5],
-        ["foos", 9]
+        ["foos", 9],
       ]);
 
       assert.equal(trie.get("foo"), 5);
@@ -66,7 +66,7 @@ describe("Radix Trie", () => {
     it("add values to the tree from a map.", () => {
       const map = new Map([
         ["foo", 5],
-        ["foos", 9]
+        ["foos", 9],
       ]);
       const trie = new Trie().add(map);
 
@@ -77,7 +77,7 @@ describe("Radix Trie", () => {
     it("add values to the tree from an object.", () => {
       const trie = new Trie().add({
         foo: 5,
-        foos: 9
+        foos: 9,
       });
 
       assert.equal(trie.get("foo"), 5);
@@ -211,13 +211,29 @@ describe("Radix Trie", () => {
     it("gets a list of all key/value pairs that at least partially match a key", () => {
       const trie = new Trie().add("bar", 15).add("barstool", false);
 
-      assert.deepEqual([...trie.fuzzyGet("bar")], [["bar", 15], ["barstool", false]]);
+      assert.deepEqual(
+        [...trie.fuzzyGet("bar")],
+        [
+          ["bar", 15],
+          ["barstool", false],
+        ]
+      );
     });
 
     it("gets a list of all key/value pairs that at least partially match a key #2", () => {
-      const trie = new Trie().add("bar", 15).add("barstool", false).add("b", "b");
+      const trie = new Trie()
+        .add("bar", 15)
+        .add("barstool", false)
+        .add("b", "b");
 
-      assert.deepEqual([...trie.fuzzyGet("b")], [["b", "b"], ["bar", 15], ["barstool", false]]);
+      assert.deepEqual(
+        [...trie.fuzzyGet("b")],
+        [
+          ["b", "b"],
+          ["bar", 15],
+          ["barstool", false],
+        ]
+      );
     });
 
     it("searches regardless of case.", () => {
@@ -250,15 +266,28 @@ describe("Radix Trie", () => {
 
   describe("Entries", () => {
     it("returns all the entries of a trie", () => {
-      const trie = new Trie().add("bar", 15).add("barstool", false).add("b", "b");
+      const trie = new Trie()
+        .add("bar", 15)
+        .add("barstool", false)
+        .add("b", "b");
 
-      assert.deepEqual([...trie.entries()], [["b", "b"], ["bar", 15], ["barstool", false]]);
+      assert.deepEqual(
+        [...trie.entries()],
+        [
+          ["b", "b"],
+          ["bar", 15],
+          ["barstool", false],
+        ]
+      );
     });
   });
 
   describe("toJSON", () => {
     it("converts all entries to stringified JSON", () => {
-      const trie = new Trie().add("bar", 15).add("barstool", false).add("b", "b");
+      const trie = new Trie()
+        .add("bar", 15)
+        .add("barstool", false)
+        .add("b", "b");
 
       assert.equal(trie.toJSON(), '{"b":"b","bar":15,"barstool":false}');
     });
@@ -266,7 +295,10 @@ describe("Radix Trie", () => {
 
   describe("Keys", () => {
     it("returns all the keys of a trie", () => {
-      const trie = new Trie().add("bar", 15).add("barstool", false).add("b", "b");
+      const trie = new Trie()
+        .add("bar", 15)
+        .add("barstool", false)
+        .add("b", "b");
 
       assert.deepEqual([...trie.keys()], ["b", "bar", "barstool"]);
     });
@@ -274,7 +306,10 @@ describe("Radix Trie", () => {
 
   describe("Values", () => {
     it("returns all the values of a trie", () => {
-      const trie = new Trie().add("bar", 15).add("barstool", false).add("b", "b");
+      const trie = new Trie()
+        .add("bar", 15)
+        .add("barstool", false)
+        .add("b", "b");
 
       assert.deepEqual([...trie.values()], ["b", 15, false]);
     });
@@ -282,14 +317,17 @@ describe("Radix Trie", () => {
 
   describe("forEach", () => {
     it("executes a callback once for each key/value pair.", () => {
-      const trie = new Trie().add("bar", 15).add("barstool", false).add("b", "b");
+      const trie = new Trie()
+        .add("bar", 15)
+        .add("barstool", false)
+        .add("b", "b");
 
       const values = ["b", 15, false];
       const keys = ["b", "bar", "barstool"];
       let returnedKeys = [];
       let returnedValues = [];
       let thisObj = {};
-      const callback = function(key, value) {
+      const callback = function (key, value) {
         returnedValues.push(value);
         returnedKeys.push(key);
         this[key] = value;
