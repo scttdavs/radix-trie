@@ -1,6 +1,4 @@
 # Radix Trie (in Javascript)
-[![Build Status](https://travis-ci.org/scttdavs/radix-trie.svg?branch=master)](https://travis-ci.org/scttdavs/radix-trie)
-[![Coverage Status](https://coveralls.io/repos/github/scttdavs/radix-trie/badge.svg?branch=master)](https://coveralls.io/github/scttdavs/radix-trie?branch=master)
 [![NPM](https://img.shields.io/npm/v/radix-trie-js.svg)](https://www.npmjs.com/package/radix-trie-js)
 
 ## Usage
