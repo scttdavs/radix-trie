@@ -1,7 +1,7 @@
 # Radix Trie (in Javascript)
 
 [![NPM](https://img.shields.io/npm/v/radix-trie-js.svg)](https://www.npmjs.com/package/radix-trie-js)
-![build](https://github.com/scttdavs/radix-trie/actions/workflows/build.yml/badge.svg?branch=master)
+![build](https://github.com/scttdavs/radix-trie/actions/workflows/<WORKFLOW_FILE>/badge.svg?branch=master)
 
 
 ## Usage
